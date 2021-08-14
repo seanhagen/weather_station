@@ -1,0 +1,21 @@
+* TODO integrate found code & learn some things
+- https://blog.kkessler.com/2012/06/21/sparkfun-weather-station/
+- https://github.com/sparkfun/Wimp_Weather_Station/blob/master/Wimp_Weather_Station.ino
+- https://learn.sparkfun.com/tutorials/esp32-environment-sensor-shield-hookup-guide/all
+- https://forum.sparkfun.com/viewtopic.php?t=45824
+- https://learn.sparkfun.com/tutorials/microclimate-kit-experiment-guide/about-the-weatherbit
+- https://www.arduino.cc/reference/en/language/functions/external-interrupts/attachinterrupt/
+- https://learn.sparkfun.com/tutorials/micromod-weather-carrier-board-hookup-guide
+- https://learn.sparkfun.com/tutorials/getting-started-with-micromod
+- https://learn.sparkfun.com/tutorials/micromod-esp32-processor-board-hookup-guide/all
+- https://learn.sparkfun.com/tutorials/micromod-esp32-processor-board-hookup-guide/hardware-overview
+- https://learn.sparkfun.com/tutorials/micromod-esp32-processor-board-hookup-guide/arduino-example-blink
+- https://github.com/sparkfun/SparkFun_BME280_Arduino_Library/blob/master/examples/Example6_LowPower/Example6_LowPower.ino
+- https://learn.sparkfun.com/tutorials/qwiic-atmospheric-sensor-bme280-hookup-guide/all#arduino-example-code
+- https://cdn.sparkfun.com/assets/8/4/c/d/6/Weather_Sensor_Assembly_Updated.pdf
+- https://learn.sparkfun.com/tutorials/micromod-weather-carrier-board-hookup-guide
+- 
+
+* TODO potentially useful libraries
+- https://platformio.org/lib/show/89/PubSubClient
+  
