@@ -1,0 +1,36 @@
+// based on properties from https://github.com/sparkfun/Arduino_Boards/raw/main/IDE_Board_Manager/sparkfun-esp32-1.0.1.tar.bz2^
+{
+  "build": {
+    "arduino":{
+      "partitions": "default.csv" //esp32micromod.build.partitions=default
+    },
+    "mcu": "esp32", //esp32micromod.build.mcu=esp32
+    "core": "esp32", //esp32micromod.build.core=esp32
+    "variant": "esp32micromod", //esp32micromod.build.variant=esp32micromod
+    "flash_mode": "dio", //esp32micromod.build.flash_mode=dio
+    "f_flash": "40m", //esp32micromod.build.flash_freq=40m
+    "flash_size": "4MB", //esp32micromod.build.flash_size=4MB
+    "f_cpu": "240000000L", //esp32micromod.build.f_cpu=240000000L
+    "boot": "dio", //esp32micromod.build.boot=dio
+    "extra_flags": [
+      "-DESP32_MICROMOD", //esp32micromod.build.board=ESP32_MICROMOD
+      "-DBOARD_HAS_PSRAM", //esp32micromod.menu.PSRAM.enabled.build.defines=-DBOARD_HAS_PSRAM -mfix-esp32-psram-cache-issue
+      "-mfix-esp32-psram-cache-issue"
+    ]
+  },
+  "frameworks": [
+    "arduino",
+    "espidf"
+  ],
+  "upload": {
+    "maximum_ram_size": 1310720, //esp32micromod.upload.maximum_size=1310720
+    "maximum_size": 327680, //esp32micromod.upload.maximum_data_size=327680
+    "use_1200bps_touch": true,
+    "wait_for_upload_port": true //esp32micromod.upload.wait_for_upload_port=true
+    "upload_command": "esptool_py", //esp32micromod.upload.tool=esptool_py
+    "upload_protocol": "custom"
+  },
+  "name": "SparkFun ESP32 MicroMod", // esp32micromod.name=SparkFun ESP32 MicroMod
+  "vendor": "SparkFun Electronics",
+  "url": "https://www.sparkfun.com/products/16781"
+}
