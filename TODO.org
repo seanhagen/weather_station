@@ -19,3 +19,11 @@
 * TODO potentially useful libraries
 - https://platformio.org/lib/show/89/PubSubClient
   
+* TODO buy some quartz glass to test uv sensor
+- https://www.amazon.com/Quartz-Plates-50-pcs-UV-Grade/dp/B08QMYF1SM/ref=pd_lpo_1?pd_rd_i=B07SB3F2LL&th=1
+- https://www.amazon.com/United-Scientific-Glass-Streak-Plates/dp/B01MUHX6MR/ref=pd_lpo_4?pd_rd_i=B01MUHX6MR&psc=1
+- https://www.alibaba.com/showroom/quartz-glass-sheet.html
+- https://www.alibaba.com/showroom/clear-quartz-glass-panel.html
+- https://www.cureuv.com/collections/quartz-glass-plates/products/colorspan-72-uvr-uv-quartz-plate
+- https://www.cureuv.com/collections/quartz-glass-plates/products/colorspan-72-uvx-uv-quartz-plate
+- https://www.cureuv.com/collections/quartz-glass-plates?sort_by=price-ascending
