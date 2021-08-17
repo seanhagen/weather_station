@@ -1,0 +1,7 @@
+[env] 
+build_flags =
+  -DDEVICE_NAME=yourDeviceName
+  -DWIFI_SSID=wifi ssid
+  -DWIFI_PASSWORD=wifi password
+  -DMQTT_SERVER=ip of mqtt server
+  -DMQTT_PORT=port of mqtt server
