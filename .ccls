@@ -1,15 +1,25 @@
 clang
 
-%c -std=gnu99 -Wno-old-style-declaration -Os -g3 -Wall -nostdlib -Wpointer-arith -Wno-error=unused-but-set-variable -Wno-error=unused-variable -mlongcalls -ffunction-sections -fdata-sections -fstrict-volatile-bitfields -Wno-error=deprecated-declarations -Wno-error=unused-function -Wno-unused-parameter -Wno-sign-compare -fstack-protector -fexceptions -Werror=reorder
-%cpp -fno-rtti -fno-exceptions -std=gnu++11 -Os -g3 -Wall -nostdlib -Wpointer-arith -Wno-error=unused-but-set-variable -Wno-error=unused-variable -mlongcalls -ffunction-sections -fdata-sections -fstrict-volatile-bitfields -Wno-error=deprecated-declarations -Wno-error=unused-function -Wno-unused-parameter -Wno-sign-compare -fstack-protector -fexceptions -Werror=reorder
+%c -std=gnu99 -Wno-old-style-declaration -mfix-esp32-psram-cache-issue -Os -g3 -Wall -nostdlib -Wpointer-arith -Wno-error=unused-but-set-variable -Wno-error=unused-variable -mlongcalls -ffunction-sections -fdata-sections -fstrict-volatile-bitfields -Wno-error=deprecated-declarations -Wno-error=unused-function -Wno-unused-parameter -Wno-sign-compare -fstack-protector -fexceptions -Werror=reorder
+%cpp -fno-rtti -fno-exceptions -std=gnu++11 -mfix-esp32-psram-cache-issue -Os -g3 -Wall -nostdlib -Wpointer-arith -Wno-error=unused-but-set-variable -Wno-error=unused-variable -mlongcalls -ffunction-sections -fdata-sections -fstrict-volatile-bitfields -Wno-error=deprecated-declarations -Wno-error=unused-function -Wno-unused-parameter -Wno-sign-compare -fstack-protector -fexceptions -Werror=reorder
 
 -I/home/sean/Code/C++/weather_station/include
 -I/home/sean/Code/C++/weather_station/src
--I/home/sean/Code/C++/weather_station/.pio/libdeps/esp32thing/SparkFun BME280/src
--I/home/sean/Code/C++/weather_station/.pio/libdeps/esp32thing/PubSubClient/src
--I/home/sean/Code/C++/weather_station/.pio/libdeps/esp32thing/Adafruit BusIO
--I/home/sean/.platformio/packages/framework-arduinoespressif32/libraries/Wire/src
+-I/home/sean/Code/C++/weather_station/lib/speed
+-I/home/sean/Code/C++/weather_station/lib/direction
+-I/home/sean/Code/C++/weather_station/lib/veml6075
+-I/home/sean/Code/C++/weather_station/lib/rain
+-I/home/sean/Code/C++/weather_station/lib/bme280
+-I/home/sean/Code/C++/weather_station/lib/as3935
+-I/home/sean/Code/C++/weather_station/lib/mqtt
+-I/home/sean/.platformio/packages/framework-arduinoespressif32/libraries/WiFi/src
+-I/home/sean/Code/C++/weather_station/.pio/libdeps/esp32micromod/SparkFun VEML6075 Arduino Library/src
+-I/home/sean/Code/C++/weather_station/.pio/libdeps/esp32micromod/SparkFun AS3935 Lightning Detector Arduino Library/src
+-I/home/sean/Code/C++/weather_station/.pio/libdeps/esp32micromod/SparkFun BME280/src
+-I/home/sean/Code/C++/weather_station/.pio/libdeps/esp32micromod/MQTT/src
+-I/home/sean/Code/C++/weather_station/.pio/libdeps/esp32micromod/Adafruit BusIO
 -I/home/sean/.platformio/packages/framework-arduinoespressif32/libraries/SPI/src
+-I/home/sean/.platformio/packages/framework-arduinoespressif32/libraries/Wire/src
 -I/home/sean/.platformio/packages/framework-arduinoespressif32/tools/sdk/include/config
 -I/home/sean/.platformio/packages/framework-arduinoespressif32/tools/sdk/include/app_trace
 -I/home/sean/.platformio/packages/framework-arduinoespressif32/tools/sdk/include/app_update
@@ -72,7 +82,8 @@ clang
 -I/home/sean/.platformio/packages/framework-arduinoespressif32/tools/sdk/include/esp32-camera
 -I/home/sean/.platformio/packages/framework-arduinoespressif32/tools/sdk/include/fb_gfx
 -I/home/sean/.platformio/packages/framework-arduinoespressif32/cores/esp32
--I/home/sean/.platformio/packages/framework-arduinoespressif32/variants/esp32thing
+-I/home/sean/.platformio/packages/framework-arduinoespressif32/variants/esp32micromod
+-I/home/sean/Code/C++/weather_station/.pio/libdeps/esp32micromod/PubSubClient/src
 -I/home/sean/.platformio/packages/framework-arduinoespressif32/libraries/ArduinoOTA/src
 -I/home/sean/.platformio/packages/framework-arduinoespressif32/libraries/AsyncUDP/src
 -I/home/sean/.platformio/packages/framework-arduinoespressif32/libraries/AzureIoT/src
@@ -96,7 +107,6 @@ clang
 -I/home/sean/.platformio/packages/framework-arduinoespressif32/libraries/Ticker/src
 -I/home/sean/.platformio/packages/framework-arduinoespressif32/libraries/Update/src
 -I/home/sean/.platformio/packages/framework-arduinoespressif32/libraries/WebServer/src
--I/home/sean/.platformio/packages/framework-arduinoespressif32/libraries/WiFi/src
 -I/home/sean/.platformio/packages/framework-arduinoespressif32/libraries/WiFiClientSecure/src
 -I/home/sean/.platformio/packages/framework-arduinoespressif32/libraries/WiFiProv/src
 -I/home/sean/.platformio/packages/toolchain-xtensa32/xtensa-esp32-elf/include/c++/5.2.0
@@ -106,7 +116,12 @@ clang
 -I/home/sean/.platformio/packages/toolchain-xtensa32/xtensa-esp32-elf/include
 
 -DPLATFORMIO=50200
--DARDUINO_ESP32_THING
+-DESP32_MICROMOD
+-DBOARD_HAS_PSRAM
+-DDEVICE_NAME=hagenWeather
+-DWIFI_SSID=HagenIoT
+-DWIFI_PASSWORD=7cc3M7CptX
+-DMQTT_SERVER=10.20.0.11
 -DESP32
 -DESP_PLATFORM
 -DF_CPU=240000000L
@@ -114,5 +129,5 @@ clang
 -DMBEDTLS_CONFIG_FILE="mbedtls/esp_config.h"
 -DARDUINO=10805
 -DARDUINO_ARCH_ESP32
--DARDUINO_VARIANT="esp32thing"
--DARDUINO_BOARD="SparkFun ESP32 Thing"
+-DARDUINO_VARIANT="esp32micromod"
+-DARDUINO_BOARD="SparkFun ESP32 MicroMod"

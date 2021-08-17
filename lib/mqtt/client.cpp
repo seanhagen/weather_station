@@ -1,15 +1,28 @@
 #include "client.h"
 
-WiFiClient espClient;
-PubSubClient client(espClient);
-unsigned long lastMsg = 0;
-char msg[MSG_BUFFER_SIZE];
-int value = 0;
+WiFiClient net;
+MQTTClient client;
+
+unsigned long lastMillis = 0;
+
+CCR(mqttServer, MQTT_SERVER)
+CCP(networkName, WIFI_SSID)
+CCP(networkPswd, WIFI_PASSWORD)
+
+void connect(){
+  Serial.print("Opening to MQTT with device name ");
+  Serial.print(STR(DEVICE_NAME));
+  while (!client.connect(STR(DEVICE_NAME))){
+    Serial.print(".");
+    delay(100);
+  }
+  Serial.println("\nCONNECTED!");
+}
 
 void setupMqtt() {
   Serial.println("Connecting to wifi");
   WiFi.mode(WIFI_STA);
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  WiFi.begin(networkName, networkPswd);
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
@@ -22,6 +35,23 @@ void setupMqtt() {
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
 
-  client.setServer(MQTT_SERVER, MQTT_PORT);
-  client.setCallback(callback);
+  IPAddress addr;
+  addr.fromString(mqttServer);
+  Serial.print("Connecting to MQTT server at ");
+  Serial.print(mqttServer);
+  Serial.print(":");
+  Serial.println(MQTT_PORT);
+  
+  client.begin(addr, MQTT_PORT, net);
+  
+  connect();
+  
+  if (!client.publish("/weather/esp32", "{'wooo':true}")){
+    Serial.print("Unable to pubulish message:");
+    lwmqtt_err_t err = client.lastError();
+    Serial.println(err);
+  } else {
+    Serial.println("Message published!");
+  }
+
 }

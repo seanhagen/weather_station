@@ -9,6 +9,12 @@
 #define DO_EXPAND(VAL) VAL##1
 #define EXPAND(VAL) DO_EXPAND(VAL)
 
+#define CCP2(A, B) const char *A = B;
+#define CCP(NAME, X) CCP2(NAME, STR(X))
+
+#define CCR2(A, B) const char A[] = B;
+#define CCR(NAME, X) CCR2(NAME, STR(X))
+
 #if !defined(DEVICE_NAME) || (EXPAND(DEVICE_NAME) == 1)
 #error You must define DEVICE_NAME, have you followed the instructions in README.md?
 #endif
