@@ -1,8 +1,6 @@
 #ifndef RAIN_H
 #define RAIN_H
-#include <Arduino.h>
-
-#define RAIN_PIN 27
+#include "setup.h"
 
 typedef struct {
   float dailyRain;

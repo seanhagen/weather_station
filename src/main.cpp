@@ -1,21 +1,12 @@
-#include "SparkFunBME280.h"
-#include "SparkFun_AS3935.h"
-#include "SparkFun_VEML6075_Arduino_Library.h"
-#include "driver/adc.h"
-#include "esp_adc_cal.h"
-#include <Arduino.h>
-#include <SPI.h>
-#include <Wire.h>
-
+#include "lightning.h"
+#include "myBME280.h"
 #include "rain.h"
+#include "setup.h"
+#include "uv.h"
 #include "wind_dir.h"
 #include "wind_speed.h"
 
 #define LED 2
-
-BME280 tempSensor;
-VEML6075 uv;
-SparkFun_AS3935 lightning;
 
 // Global Variables
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -40,11 +31,16 @@ void setup(void) {
   pinMode(LED, OUTPUT);
   pinMode(LED_BUILTIN, OUTPUT);
 
-  // Wire.begin();
+  Wire.begin();
   // SPI.begin();
+
   setupWindDir();
   setupWindSpeed();
   setupRain();
+  setupUV();
+  setupLightning();
+  // one sensor does three things! amazing!
+  setupBME280();
 
   interrupts();
 }
@@ -75,21 +71,63 @@ void loop(void) {
       zeroWindGust10m(minutes_10m);
     }
 
-    windSpeedInfo ws = windSpeedLoop(minutes_10m);
-    windDirInfo wd = windDirLoop();
-    rainInfo rn = rainLoop();
-
     Serial.println("----------------------");
+#if defined(ENABLE_WIND_DIR)
+    windDirInfo wd = windDirLoop();
     Serial.print("Wind direction: ");
     Serial.println(wd.name);
+#endif
+#if defined(ENABLE_WIND_SPEED)
+    windSpeedInfo ws = windSpeedLoop(minutes_10m);
     Serial.print("Wind speed: ");
     Serial.println(ws.windSpeedMPH);
+#endif
+#if defined(ENABLE_RAIN)
+    rainInfo rn = rainLoop();
     Serial.print("Rain this hour: ");
     Serial.println(rn.rainHour);
     Serial.print("Rain this day: ");
-    Serial.println(rn.dailyRain);
+    Serial.print(rn.dailyRain);
+#endif
+#if defined(ENABLE_UV)
+    uvInfo v = uvLoop();
+    Serial.print("UVA: ");
+    Serial.print(v.uva);
+    Serial.print(", UVB: ");
+    Serial.print(v.uvb);
+    Serial.print(", UV Index: ");
+    Serial.println(v.index);
+#endif
+#if defined(ENABLE_BME280)
+    bme280Reading thp = loopBME280();
+    Serial.print("Temperature: ");
+    Serial.print(thp.tempC);
+    Serial.print(" °C, humidity: ");
+    Serial.print(thp.humidity);
+    Serial.print(" %RH, air pressure: ");
+    Serial.print(thp.pressure);
+    Serial.println(" Pa");
+#endif
+#if defined(ENABLE_LIGHTNING)
+    lightningInfo li = loopLightning();
+    Serial.print("Lightning: ");
+    if (!li.strike) {
+      Serial.print(" no strike detected");
+      if (!li.isNoise && !li.isDisturber)
+        Serial.println("!");
+      if (li.isNoise)
+        Serial.println(" -- noise!");
+      if (li.isDisturber)
+        Serial.println(" -- disturber!");
+    } else {
+      Serial.print(" strike detected ");
+      Serial.print(li.distance);
+      Serial.println("km away!");
+    }
+#endif
+    Serial.println("Info dump complete");
   }
-  digitalWrite(LED, LOW);
-  delay(100);
-  digitalWrite(LED, HIGH); // Blink stat LED
+  // digitalWrite(LED, LOW);
+  // delay(100);
+  // digitalWrite(LED, HIGH); // Blink stat LED
 }

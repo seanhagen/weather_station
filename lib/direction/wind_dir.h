@@ -1,13 +1,9 @@
 #ifndef WIND_DIR_H
 #define WIND_DIR_H
-#include <Arduino.h>
+#include "setup.h"
 #include <stdint.h>
-
-/*
- * A1 - GPIO pin 35, pad 38 on the MicroMod (Input Only!)
- * https://learn.sparkfun.com/tutorials/micromod-esp32-processor-board-hookup-guide/all
- */
-#define VANE_PIN 35
+#include "esp_adc_cal.h"
+#include "driver/adc.h"
 
 enum windVaneDir {
   NORTH,           // 0/360 DEG

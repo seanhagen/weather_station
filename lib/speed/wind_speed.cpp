@@ -1,5 +1,6 @@
 #include "wind_speed.h"
 
+#if defined(ENABLE_WIND_SPEED)
 long lastWindCheck = 0;
 volatile long lastWindIRQ = 0;
 volatile byte windClicks = 0;
@@ -30,8 +31,8 @@ float windgustmph_10m = 0;
 
 void setupWindSpeed() {
   Serial.println("Setting up wind speed pins and interrupts");
-  pinMode(WSPEED, INPUT_PULLUP);
-  attachInterrupt(WSPEED, wspeedIRQ, FALLING);
+  pinMode(WSPEED_PIN, INPUT_PULLUP);
+  attachInterrupt(WSPEED_PIN, wspeedIRQ, FALLING);
 }
 
 void wspeedIRQ() {
@@ -101,3 +102,9 @@ windSpeedInfo windSpeedLoop(byte minutes_10m) {
 void zeroWindGust10m(int i) {
   windgust_10m[i] = 0; // Zero out this minute's gust
 }
+#endif
+
+#if !defined(ENABLE_WIND_SPEED)
+void zeroWindGust10m(int i){}
+void setupWindSpeed(){}
+#endif

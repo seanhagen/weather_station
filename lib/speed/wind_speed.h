@@ -1,8 +1,7 @@
 #ifndef WIND_SPEED_H
 #define WIND_SPEED_H
-#include <Arduino.h>
+#include "setup.h"
 
-#define WSPEED 14
 #define WIND_DIR_AVG_SIZE 120
 
 typedef struct {

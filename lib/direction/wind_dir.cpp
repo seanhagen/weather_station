@@ -1,5 +1,6 @@
 #include "wind_dir.h"
 
+#if defined(ENABLE_WIND_DIR)
 float rawWindDir;
 float voltage;
 
@@ -116,3 +117,12 @@ windDirInfo windDirLoop() {
 
   return windDirInfo{voltage, vd, name};
 }
+#endif
+
+#if !defined(ENABLE_WIND_DIR)
+void setupWindDir() {}
+
+windDirInfo windDirLoop() {
+  return windDirInfo{-1, UNKNOWN, "Wind Direction Not Enabled"};
+}
+#endif

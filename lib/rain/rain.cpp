@@ -1,5 +1,6 @@
 #include "rain.h"
 
+#if defined(ENABLE_RAIN)
 // 60 floating numbers to keep track of 60 minutes of rain
 volatile float rainHour[60];
 // [rain inches over the past hour)] -- the accumulated
@@ -58,3 +59,12 @@ rainInfo rainLoop() {
 
   return rainInfo{dailyrainin, rainin};
 }
+#endif
+
+#if !defined(ENABLE_RAIN)
+void setupRain() {}
+void setRainMinute(byte m) {}
+void zeroRain(byte minutes) {}
+void zeroRainDay() {}
+rainInfo rainLoop() { return rainInfo{-1, -1}; }
+#endif
