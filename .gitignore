@@ -2,3 +2,4 @@
 .clang_complete
 .ccls-cache
 /wifi_params.ini
+/params.ini
