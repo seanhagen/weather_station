@@ -9,29 +9,25 @@
 #define DO_EXPAND(VAL) VAL##1
 #define EXPAND(VAL) DO_EXPAND(VAL)
 
-#ifdef DEVICE_NAME
-#pragma message STR(DEVICE_NAME)
-#endif
-
 #if !defined(DEVICE_NAME) || (EXPAND(DEVICE_NAME) == 1)
 #error You must define DEVICE_NAME, have you followed the instructions in README.md?
 #endif
 
-/* #ifdef WIFI_PASSWORD */
-/* #pragma message STR(WIFI_PASSWORD) */
-/* #endif */
+#if !defined(WIFI_SSID) || (EXPAND(WIFI_SSID) == 1)
+#error You must define WIFI_SSID, have you followed the instructions in README.md?
+#endif
 
-/* #ifdef WIFI_SSID */
-/* #pragma message STR(WIFI_SSID) */
-/* #endif */
+#if !defined(WIFI_PASSWORD)
+#error You must define WIFI_PASSWORD, have you followed the instructions in README.md?
+#endif
 
-/* #ifdef MQTT_SERVER */
-/* #pragma message STR(MQTT_SERVER) */
-/* #endif */
+#if !defined(MQTT_SERVER)
+#error You must define MQTT_SERVER, have you followed the instructions in README.md?
+#endif
 
-/* #ifdef MQTT_PORT */
-/* #pragma message STR(MQTT_PORT) */
-/* #endif */
+#if !defined(MQTT_PORT) || (EXPAND(MQTT_PORT) == 1)
+#define MQTT_PORT 1883
+#endif
 
 /*
  * All pin references:
