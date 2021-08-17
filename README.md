@@ -23,10 +23,10 @@ Not ready!
 - [x] wind direction
 - [x] wind speed
 - [ ] rainfall ( see [this Twitter thread](https://twitter.com/seanphagen/status/1427064136391741444) )
-- [ ] temperature
-- [ ] humidity
-- [ ] air pressure
-- [ ] lightning dectection
-- [ ] uv levels
+- [x] temperature
+- [x] humidity
+- [x] air pressure
+- [x] lightning dectection
+- [x] uv levels
 - [ ] connecting WiFi 
 - [ ] publishing messages to MQTT
