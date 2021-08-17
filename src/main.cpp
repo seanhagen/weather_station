@@ -1,3 +1,4 @@
+#include "client.h"
 #include "lightning.h"
 #include "myBME280.h"
 #include "rain.h"
@@ -41,6 +42,8 @@ void setup(void) {
   setupLightning();
   // one sensor does three things! amazing!
   setupBME280();
+
+  setupMqtt();
 
   interrupts();
 }
