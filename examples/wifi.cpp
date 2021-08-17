@@ -3,48 +3,6 @@
 #include <Wire.h>
 BME280 mySensor;
 
-/*
- * The anemometer outputs a digital signal tied to D0 (MicroMod pad 10).
- * The wind vain outputs an analog signal relative to its position tied to
- * A1 (MicroMod pad 38). The rainfall detector outputs a digital signal to
- * D1 (MicroMod pad 18).
- */
-
-void setup() {
-  Serial.begin(115200);
-  Serial.println("Reading basic values from BME280");
-
-  Wire.begin();
-  if (mySensor.beginI2C() == false) { // Begin communication over I2C
-    Serial.println("The sensor did not respond. Please check wiring.");
-    while (1)
-      ; // Freeze
-  }
-  // mySensor.setReferencePressure(101930);
-}
-
-void loop() {
-  Serial.print("Humidity: ");
-  Serial.print(mySensor.readFloatHumidity(), 0);
-
-  Serial.print(" Pressure: ");
-  Serial.print(mySensor.readFloatPressure(), 0);
-  // // need to set reference pressure, otherwise will report incorrect
-  altitude
-      // Serial.print(" Alt: ");
-      // Serial.print(mySensor.readFloatAltitudeMeters(), 1);
-      // Serial.print(mySensor.readFloatAltitudeFeet(), 1);
-      Serial.print(" Temp: ");
-  Serial.print(mySensor.readTempC(), 2);
-  // Serial.print(mySensor.readTempF(), 2);
-  Serial.println();
-  /*
-Humidity: 43 Pressure: 101893 Alt: -154.7 Temp: 82.67
-Humidity: 43 Pressure: 101895 Alt: -155.2 Temp: 82.67
-*/
-  delay(50);
-}
-
 // WiFi network name and password:
 const char *networkName = "HagenIoT";
 const char *networkPswd = "7cc3M7CptX";
