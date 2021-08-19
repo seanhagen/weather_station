@@ -1,8 +1,11 @@
+// all the project setup stuff
+#include "setup.h"
+
+// everything else
 #include "client.h"
 #include "lightning.h"
 #include "myBME280.h"
 #include "rain.h"
-#include "setup.h"
 #include "uv.h"
 #include "wind_dir.h"
 #include "wind_speed.h"
@@ -22,15 +25,20 @@ byte minutes_10m; // Keeps track of where we are in wind gust/dir over last 10
 byte hour;
 
 void setup(void) {
+  pinMode(LED, OUTPUT);
+  digitalWrite(LED, LOW);
+  delay(2000);
+  digitalWrite(LED, HIGH); // Blink stat LED
+  delay(2000);
+  digitalWrite(LED, LOW);
+
   Serial.begin(115200);
   while (!Serial)
     ;
+  randomSeed(micros());
 
   seconds = 0;
   lastSecond = millis();
-
-  pinMode(LED, OUTPUT);
-  pinMode(LED_BUILTIN, OUTPUT);
 
   Wire.begin();
   // SPI.begin();
@@ -129,6 +137,7 @@ void loop(void) {
     }
 #endif
     Serial.println("Info dump complete");
+    mqttLoop();
   }
   // digitalWrite(LED, LOW);
   // delay(100);

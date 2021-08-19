@@ -7,5 +7,6 @@
 #define MSG_BUFFER_SIZE (50)
 
 void setupMqtt();
+void mqttLoop();
 
 #endif

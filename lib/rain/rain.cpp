@@ -27,6 +27,22 @@ void setupRain() {
 // interrupts, not by the main code
 void rainIRQ() {
   Serial.println("Rain IRQ!");
+  digitalWrite(LED, LOW);
+  delay(500);
+  digitalWrite(LED, HIGH); // Blink stat LED
+  delay(500);
+
+  digitalWrite(LED, LOW);
+  delay(500);
+  digitalWrite(LED, HIGH); // Blink stat LED
+  delay(500);
+
+  digitalWrite(LED, LOW);
+  delay(500);
+  digitalWrite(LED, HIGH); // Blink stat LED
+  delay(500);
+  digitalWrite(LED, LOW); // Blink stat LED
+
   // Count rain gauge bucket tips as they occur
   // Activated by the magnet and reed switch in the rain gauge, attached to
   // input D2
