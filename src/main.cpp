@@ -1,124 +1,125 @@
-// all the project setup stuff
-// #include "setup.h"
-
-// everything else
-// #include "client.h"
-// #include "lightning.h"
-// #include "myBME280.h"
-// #include "rain.h"
-// #include "uv.h"
-// #include "wind_dir.h"
-// #include "wind_speed.h"
-
+#include <Arduino.h>
 #include <station.h>
 
-#define LED 2
+#define PERIOD 5000
 
 Station *st;
 
-void setup(void) {
-  pinMode(LED, OUTPUT);
-  digitalWrite(LED, LOW);
-  delay(2000);
-  digitalWrite(LED, HIGH); // Blink stat LED
-  delay(2000);
-  digitalWrite(LED, LOW);
+long now = 0;
+long lastSecond = 0;
+byte second = 0;
+byte minute = 0;
 
+void setup(void) {
   Serial.begin(115200);
   while (!Serial)
     ;
 
-  st = new Station();
+  Serial.println("Setting up weather station!");
+
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, LOW);
+  delay(500);
+  digitalWrite(LED_BUILTIN, HIGH);
+  delay(500);
+  digitalWrite(LED_BUILTIN, LOW);
+
+  stationConfig cnf;
+  cnf.enableRain = false;
+  cnf.enableWind = false;
+  cnf.enableLightning = true;
+  cnf.enableUV = true;
+  cnf.enableAtmosphere = true;
+
+  st = new Station(cnf);
+  st->begin();
 
   // setupMqtt();
-  // interrupts();
+}
+
+void readMeasurements() {
+  now = millis();
+  if (now - lastSecond >= PERIOD) {
+    digitalWrite(LED_BUILTIN, HIGH);
+
+    if (second == 0) {
+      Serial.println("Time  T      H      AP          W    UVA   UVB    UVI   "
+                     "RAIN M  H  T  "
+                     "WIND  N  MA  HA  LM LH LT");
+    }
+
+    second++;
+    if (second > 59) {
+      minute++;
+      second = 0;
+      if (minute > 59) {
+        minute = 0;
+      }
+    }
+
+    Serial.print(minute);
+    Serial.print(":");
+    Serial.print(second);
+    Serial.print("   ");
+
+    allMeasurements am;
+    st->readAll(&am);
+
+    Serial.print(am.immediate.temperature);
+    Serial.print("  ");
+
+    Serial.print(am.immediate.humidity);
+    Serial.print("  ");
+
+    Serial.print(am.immediate.pressure);
+    Serial.print("  ");
+
+    Serial.print(am.immediate.windDir);
+    Serial.print("     ");
+
+    Serial.print(am.immediate.uva);
+    Serial.print("  ");
+
+    Serial.print(am.immediate.uvb);
+    Serial.print("  ");
+
+    Serial.print(am.immediate.uvIndex);
+    Serial.print("  ");
+
+    Serial.print(am.counted.rainLastMinute);
+    Serial.print("  ");
+
+    Serial.print(am.counted.rainLastHour);
+    Serial.print("  ");
+
+    Serial.print(am.counted.rainToday);
+    Serial.print("  ");
+
+    Serial.print(am.counted.windSpeedNow);
+    Serial.print("  ");
+
+    Serial.print(am.counted.windSpeedMinuteAvg);
+    Serial.print("  ");
+
+    Serial.print(am.counted.windSpeedHourAvg);
+    Serial.print("  ");
+
+    Serial.print(am.counted.lightningLastMinute);
+    Serial.print("  ");
+
+    Serial.print(am.counted.lightningLastHour);
+    Serial.print("  ");
+
+    Serial.print(am.counted.lightningToday);
+
+    Serial.println();
+
+    lastSecond = now;
+    digitalWrite(LED_BUILTIN, LOW);
+  }
 }
 
 void loop(void) {
   st->loop();
-  //   if (millis() - lastSecond >= 1000) {
-  //     lastSecond += 1000;
-
-  //     // Take a speed and direction reading every second for 2 minute average
-  //     if (++seconds_2m > 119)
-  //       seconds_2m = 0;
-
-  //     if (++seconds > 59) {
-  //       seconds = 0;
-
-  //       if (++minutes > 59) {
-  //         minutes = 0;
-  //         if (++hour > 23) {
-  //           hour = 0;
-  //           zeroRainDay();
-  //         }
-  //       }
-  //       if (++minutes_10m > 9)
-  //         minutes_10m = 0;
-
-  //       setRainMinute(minutes);
-  //       zeroRain(minutes);
-  //       zeroWindGust10m(minutes_10m);
-  //     }
-
-  //     Serial.println("----------------------");
-  // #if defined(ENABLE_WIND_DIR)
-  //     windDirInfo wd = windDirLoop();
-  //     Serial.print("Wind direction: ");
-  //     Serial.println(wd.name);
-  // #endif
-  // #if defined(ENABLE_WIND_SPEED)
-  //     windSpeedInfo ws = windSpeedLoop(minutes_10m);
-  //     Serial.print("Wind speed: ");
-  //     Serial.println(ws.windSpeedMPH);
-  // #endif
-  // #if defined(ENABLE_RAIN)
-  //     rainInfo rn = rainLoop();
-  //     Serial.print("Rain this hour: ");
-  //     Serial.println(rn.rainHour);
-  //     Serial.print("Rain this day: ");
-  //     Serial.print(rn.dailyRain);
-  // #endif
-  // #if defined(ENABLE_UV)
-  //     uvInfo v = uvLoop();
-  //     Serial.print("UVA: ");
-  //     Serial.print(v.uva);
-  //     Serial.print(", UVB: ");
-  //     Serial.print(v.uvb);
-  //     Serial.print(", UV Index: ");
-  //     Serial.println(v.index);
-  // #endif
-  // #if defined(ENABLE_BME280)
-  //     bme280Reading thp = loopBME280();
-  //     Serial.print("Temperature: ");
-  //     Serial.print(thp.tempC);
-  //     Serial.print(" °C, humidity: ");
-  //     Serial.print(thp.humidity);
-  //     Serial.print(" %RH, air pressure: ");
-  //     Serial.print(thp.pressure);
-  //     Serial.println(" Pa");
-  // #endif
-  // #if defined(ENABLE_LIGHTNING)
-  //     lightningInfo li = loopLightning();
-  //     Serial.print("Lightning: ");
-  //     if (!li.strike) {
-  //       Serial.print(" no strike detected");
-  //       if (!li.isNoise && !li.isDisturber)
-  //         Serial.println("!");
-  //       if (li.isNoise)
-  //         Serial.println(" -- noise!");
-  //       if (li.isDisturber)
-  //         Serial.println(" -- disturber!");
-  //     } else {
-  //       Serial.print(" strike detected ");
-  //       Serial.print(li.distance);
-  //       Serial.println("km away!");
-  //     }
-  // #endif
-  //     Serial.println("Info dump complete");
-  //     mqttLoop();
-  //   }
-  //   // digitalWrite(LED, LOW);
-  //   // delay(100);
-  //   // digitalWrite(LED, HIGH); // Blink stat LED
+  readMeasurements();
 }
