@@ -1,12 +1,19 @@
+#define ARDUINOJSON_USE_DOUBLE 0
+#include "ArduinoJson.h"
+#include "mqttClient.h"
 #include <Arduino.h>
 #include <station.h>
 
 #define PERIOD 5000
+#define SECOND 1000
 
 Station *st;
 
+MqttPublisher mClient;
+
 long now = 0;
 long lastSecond = 0;
+long lastSecond2 = 0;
 byte second = 0;
 byte minute = 0;
 
@@ -34,92 +41,64 @@ void setup(void) {
   st = new Station(cnf);
   st->begin();
 
-  // setupMqtt();
-}
-
-void readMeasurements() {
-  now = millis();
-  if (now - lastSecond >= PERIOD) {
-    digitalWrite(LED_BUILTIN, HIGH);
-
-    if (second == 0) {
-      Serial.println("Time  T      H      AP          W    UVA   UVB    UVI   "
-                     "RAIN M  H  T  "
-                     "WIND  N  MA  HA  LM LH LT");
-    }
-
-    second++;
-    if (second > 59) {
-      minute++;
-      second = 0;
-      if (minute > 59) {
-        minute = 0;
-      }
-    }
-
-    Serial.print(minute);
-    Serial.print(":");
-    Serial.print(second);
-    Serial.print("   ");
-
-    allMeasurements am;
-    st->readAll(&am);
-
-    Serial.print(am.immediate.temperature);
-    Serial.print("  ");
-
-    Serial.print(am.immediate.humidity);
-    Serial.print("  ");
-
-    Serial.print(am.immediate.pressure);
-    Serial.print("  ");
-
-    Serial.print(am.immediate.windDir);
-    Serial.print("     ");
-
-    Serial.print(am.immediate.uva);
-    Serial.print("  ");
-
-    Serial.print(am.immediate.uvb);
-    Serial.print("  ");
-
-    Serial.print(am.immediate.uvIndex);
-    Serial.print("  ");
-
-    Serial.print(am.counted.rainLastMinute);
-    Serial.print("  ");
-
-    Serial.print(am.counted.rainLastHour);
-    Serial.print("  ");
-
-    Serial.print(am.counted.rainToday);
-    Serial.print("  ");
-
-    Serial.print(am.counted.windSpeedNow);
-    Serial.print("  ");
-
-    Serial.print(am.counted.windSpeedMinuteAvg);
-    Serial.print("  ");
-
-    Serial.print(am.counted.windSpeedHourAvg);
-    Serial.print("  ");
-
-    Serial.print(am.counted.lightningLastMinute);
-    Serial.print("  ");
-
-    Serial.print(am.counted.lightningLastHour);
-    Serial.print("  ");
-
-    Serial.print(am.counted.lightningToday);
-
-    Serial.println();
-
-    lastSecond = now;
-    digitalWrite(LED_BUILTIN, LOW);
-  }
+  mClient = MqttPublisher();
+  mClient.setAvailabilityTopic("/weather/esp32/available");
+  mClient.setStateTopic("/weather/esp32/data");
+  mClient.setup();
 }
 
 void loop(void) {
   st->loop();
-  readMeasurements();
+  mClient.loop();
+
+  now = millis();
+  if (now - lastSecond >= PERIOD) {
+    digitalWrite(LED_BUILTIN, HIGH);
+
+    allMeasurements am;
+    st->readAll(&am);
+
+    StaticJsonDocument<450> doc;
+    doc["temperature"] = am.immediate.temperature;
+    doc["humidity"] = am.immediate.humidity;
+    doc["pressure"] = am.immediate.pressure;
+    doc["uva"] = am.immediate.uva;
+    doc["uvb"] = am.immediate.uvb;
+
+    JsonObject rain = doc.createNestedObject("rain");
+    rain["minute"] = am.counted.rainLastMinute;
+    rain["hour"] = am.counted.rainLastHour;
+    rain["day"] = am.counted.rainToday;
+
+    JsonObject wind = doc.createNestedObject("wind");
+    JsonObject speed = wind.createNestedObject("speed");
+    speed["now"] = am.counted.windSpeedNow;
+    speed["minute_avg"] = am.counted.windSpeedMinuteAvg;
+    speed["hour_avg"] = am.counted.windSpeedHourAvg;
+
+    char *windDir = st->currentWindDirStr();
+    wind["direction"] = windDir;
+
+    JsonObject lightning = doc.createNestedObject("lightning");
+    lightning["minute"] = am.counted.lightningLastMinute;
+    lightning["hour"] = am.counted.lightningLastHour;
+    lightning["day"] = am.counted.lightningToday;
+
+    // JsonObject battery = doc.createNestedObject("battery");
+    // battery["level"] = 99.1;
+
+    Serial.print("Publishing message to mqtt...");
+    char buffer[500];
+    size_t n = serializeJson(doc, buffer);
+    bool success = mClient.publish(buffer, n);
+    Serial.print(" done, success: ");
+    Serial.print(success);
+    Serial.print(" -- message size: ");
+    Serial.println(n);
+
+    free(windDir);
+
+    lastSecond = now;
+    digitalWrite(LED_BUILTIN, LOW);
+  }
 }
