@@ -77,6 +77,9 @@ void loop(void) {
     speed["hour_avg"] = am.counted.windSpeedHourAvg;
 
     char *windDir = st->currentWindDirStr();
+    Serial.print("Wind dir string: '");
+    Serial.print(windDir);
+    Serial.println("' ");
     wind["direction"] = windDir;
 
     JsonObject lightning = doc.createNestedObject("lightning");
