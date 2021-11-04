@@ -84,19 +84,25 @@ void loop(void) {
     lightning["hour"] = am.counted.lightningLastHour;
     lightning["day"] = am.counted.lightningToday;
 
-    // JsonObject battery = doc.createNestedObject("battery");
-    // battery["level"] = 99.1;
+    JsonObject battery = doc.createNestedObject("battery");
+    battery["level"] = 99.1;
 
     Serial.print("Publishing message to mqtt...");
     char buffer[500];
     size_t n = serializeJson(doc, buffer);
     bool success = mClient.publish(buffer, n);
-    Serial.print(" done, success: ");
-    Serial.print(success);
-    Serial.print(" -- message size: ");
-    Serial.println(n);
 
+    // don't forget to free this pointer, otherwise we'll run out of memory!
     free(windDir);
+
+    Serial.print(" done, success: ");
+    if (success) {
+      Serial.print("SENT -- message size: ");
+      Serial.println(n);
+    } else {
+      Serial.print("FAIL -- message we tried to send: ");
+      Serial.println(buffer);
+    }
 
     lastSecond = now;
     digitalWrite(LED_BUILTIN, LOW);
