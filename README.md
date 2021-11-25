@@ -18,15 +18,3 @@ whatever I feel like doing.
 
 Not ready!
 
-## Checklist of Shit to GET DONE
-
-- [x] wind direction
-- [x] wind speed
-- [ ] rainfall ( see [this Twitter thread](https://twitter.com/seanphagen/status/1427064136391741444) )
-- [x] temperature
-- [x] humidity
-- [x] air pressure
-- [x] lightning dectection
-- [x] uv levels
-- [ ] connecting WiFi 
-- [ ] publishing messages to MQTT
