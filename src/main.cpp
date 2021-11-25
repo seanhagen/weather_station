@@ -1,8 +1,4 @@
-#define ARDUINOJSON_USE_DOUBLE 0
-#include "ArduinoJson.h"
-#include "mqttClient.h"
-#include <Arduino.h>
-#include <station.h>
+#include "setup.h"
 
 #define PERIOD 5000
 #define SECOND 1000

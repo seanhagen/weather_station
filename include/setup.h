@@ -1,8 +1,12 @@
 #ifndef SETUP_H
 #define SETUP_H
+#define ARDUINOJSON_USE_DOUBLE 0
+#include "ArduinoJson.h"
+#include "mqttClient.h"
 #include <Arduino.h>
 #include <SPI.h>
 #include <Wire.h>
+#include <station.h>
 
 #define ST(A) #A
 #define STR(A) ST(A)
