@@ -54,7 +54,7 @@ void loop(void) {
     allMeasurements am;
     st->readAll(&am);
 
-    StaticJsonDocument<450> doc;
+    StaticJsonDocument<1024> doc;
     doc["temperature"] = am.immediate.temperature;
     doc["humidity"] = am.immediate.humidity;
     doc["pressure"] = am.immediate.pressure;
@@ -87,7 +87,7 @@ void loop(void) {
     battery["level"] = 99.1;
 
     Serial.print("Publishing message to mqtt...");
-    char buffer[500];
+    char buffer[1024];
     size_t n = serializeJson(doc, buffer);
     bool success = mClient.publish(buffer, n);
 
