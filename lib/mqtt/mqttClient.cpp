@@ -42,8 +42,10 @@ void MqttPublisher::setup() {
   Serial.print(client.getBufferSize());
   Serial.println(" bytes");
 
-  Serial.print("Changing buffer size to 350 bytes, success: ");
-  bool s = client.setBufferSize(350);
+  Serial.print("Changing buffer size to ");
+  Serial.print(BUFFER_SIZE);
+  Serial.print(" bytes, success: ");
+  bool s = client.setBufferSize(BUFFER_SIZE);
   Serial.println(s);
 }
 
@@ -81,6 +83,22 @@ bool MqttPublisher::publish(const char msg[], size_t length) {
   return false;
 }
 
+bool MqttPublisher::publish(const char topic[], const char msg[], size_t length) { return client.publish(topic, msg, length); }
+
+bool MqttPublisher::publishValue(const char topic[], int val) {
+  char v[20];
+  itoa(val, v, 10);
+  size_t l = (size_t)strlen(v);
+  return client.publish(topic, v, l);
+}
+
+bool MqttPublisher::publishValue(const char topic[], float val) {
+  char v[20];
+  sprintf(v, "%0.5f", val);
+  size_t l = (size_t)strlen(v);
+  return client.publish(topic, v, l);
+}
+
 void MqttPublisher::connect() {
   Serial.print("checking wifi...");
   while (WiFi.status() != WL_CONNECTED) {
@@ -89,8 +107,7 @@ void MqttPublisher::connect() {
   }
   Serial.println("");
 
-  Serial.println("WiFi connected");
-  Serial.println("IP address: ");
+  Serial.print("WiFi connected, IP address: ");
   Serial.println(WiFi.localIP());
 
   Serial.print("Opening to MQTT with device name ");
